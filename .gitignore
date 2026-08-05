@@ -1,3 +1,10 @@
 .venv
 .env
-*.csv
+__pycache__/
+
+data/output/*
+
+# MAIS ne pas ignorer le dossier output lui-même (fichier caché .gitkeep)
+!data/output/.gitkeep
+
+data/input/*
