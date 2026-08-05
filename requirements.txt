@@ -2,3 +2,6 @@ python-dotenv
 pandas
 google-genai
 streamlit
+pandera
+scikit-learn
+pyarrow
