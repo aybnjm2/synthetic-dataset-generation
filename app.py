@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import os
-from src.agents.agent_generator import AgentGenerateur
+from src.agents.generator import AgentGenerateur
 from src.utils.metrics import analyser_diversite_texte
 from dotenv import load_dotenv
 
@@ -9,9 +9,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuration de la page Streamlit
-st.set_page_config(page_title="Générateur de Données IA", page_icon="🤖", layout="wide")
+st.set_page_config(page_title="Générateur de Données IA", layout="wide")
 
-st.title("Générateur de Données Synthétiques (Semaine 3)")
+st.title("Générateur de Données Synthétiques")
 st.markdown("""
 Cette application permet d'importer un dataset réel (seeds) et de générer de nouvelles données 
 synthétiques via l'API Google Gemini, tout en calculant la diversité du vocabulaire.
@@ -44,13 +44,23 @@ if uploaded_file is not None:
                 generateur = AgentGenerateur()
                 df_finaux = []
                 
-                # Interface de progression
+                # --- NOUVEAUTÉ : GÉNÉRATION DYNAMIQUE DES PERSONAS ---
+                with st.spinner("Étape 1 : Analyse des données et invention des Personas..."):
+                    generateur.preparer_personas_automatiquement(df_reel)
+                
+                # Affichage des personas inventés par l'IA à l'utilisateur
+                st.success("Analyse terminée ! Voici les contextes/personas inventés pour votre dataset :")
+                st.write(generateur.personas)
+                st.markdown("---")
+                # -----------------------------------------------------
+
+                # Interface de progression pour la génération
                 progress_bar = st.progress(0)
                 status_text = st.empty()
                 
                 # Boucle de génération
                 for i in range(nb_batches):
-                    status_text.text(f"Génération du batch {i+1}/{nb_batches} en cours...")
+                    status_text.text(f"Étape 2 : Génération du batch {i+1}/{nb_batches} en cours...")
                     
                     df_batch = generateur.generer_batch(df_reel, nb_lignes=nb_lignes, nb_seeds=nb_seeds)
                     
@@ -70,7 +80,7 @@ if uploaded_file is not None:
                     st.dataframe(dataset_complet)
                     
                     # Affichage des Métriques
-                    st.subheader("Métriques de Diversité (Semaine 3)")
+                    st.subheader("Métriques de Diversité (Preuve mathématique)")
                     metriques = analyser_diversite_texte(dataset_complet)
                     
                     if metriques:
