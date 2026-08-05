@@ -5,7 +5,7 @@ from src.agents.agent_generator import AgentGenerateur
 from src.utils.metrics import analyser_diversite_texte
 from dotenv import load_dotenv
 
-# Charger les variables d'environnement (pour la clé API)
+# Charger les variables d'environnement (pour la clé API).
 load_dotenv()
 
 # Configuration de la page Streamlit
