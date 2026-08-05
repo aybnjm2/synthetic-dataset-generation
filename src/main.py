@@ -1,57 +1,75 @@
+# src/main.py
 import os
 import pandas as pd
 
-# Nouveaux imports grâce à la nouvelle structure
 from agents.generator import AgentGenerateur
+from agents.validator import AgentValidateur
+from agents.curator import AgentCurateur
 from utils.metrics import analyser_diversite_texte
 
 def main():
-    print("Début de la génération de données (Architecture propre)")
+    print("Démarrage du Pipeline Multi-Agents (Semaine 4)")
     
-    # Nouveaux chemins vers les dossiers data/
+    # Chemins
     dossier_input = "data/input"
-    dossier_output = "data/output"
-    
-    # Sécurité : Créer les dossiers s'ils n'existent pas
-    os.makedirs(dossier_input, exist_ok=True)
-    os.makedirs(dossier_output, exist_ok=True)
-    
     fichier_reel = os.path.join(dossier_input, "dataset_clients_reel.csv")
     
-    # Création d'un faux dataset si introuvable
+    # 1. Vérification du fichier source
     if not os.path.exists(fichier_reel):
-        print(f"{fichier_reel} introuvable. Création d'un dataset de démonstration.")
+        os.makedirs(dossier_input, exist_ok=True)
+        print(f"Création d'un dataset de démonstration dans {fichier_reel}")
         df_demo = pd.DataFrame([
-            {"id": 1, "profil": "Jeune actif", "commentaire": "Super produit, je le recommande à tout le monde !"},
-            {"id": 2, "profil": "Retraité", "commentaire": "Je n'arrive pas à comprendre comment fonctionne le bouton de paiement."},
-            {"id": 3, "profil": "Etudiant", "commentaire": "C'est un peu cher pour moi, mais la qualité est là."}
+            {"id": 1, "profil": "Jeune actif", "commentaire": "Super produit, je le recommande !"},
+            {"id": 2, "profil": "Retraité", "commentaire": "Je n'arrive pas à comprendre le bouton."},
+            {"id": 3, "profil": "Etudiant", "commentaire": "C'est un peu cher pour moi, mais qualitatif."}
         ])
         df_demo.to_csv(fichier_reel, index=False)
     
     df_reel = pd.read_csv(fichier_reel)
-    generateur = AgentGenerateur()
     
-    df_finaux = []
+    # 2. Instanciation des agents
+    generateur = AgentGenerateur()
+    validateur = AgentValidateur()
+    curateur = AgentCurateur()
+    
+    # Préparation
+    generateur.preparer_personas_automatiquement(df_reel)
+    
+    lignes_totales_validees = []
     nb_batches = 3
     
+    # 3. La Boucle de Production
     for i in range(nb_batches):
         print(f"\n---Lancement du Batch {i+1}/{nb_batches} ---")
-        df_batch = generateur.generer_batch(df_reel, nb_lignes=5, nb_seeds=2)
-        if not df_batch.empty:
-            df_finaux.append(df_batch)
-            
-    if df_finaux:
-        dataset_complet = pd.concat(df_finaux, ignore_index=True)
-        print("\nGénération terminée !")
         
+        # Étape A : Génération
+        df_batch = generateur.generer_batch(df_reel, nb_lignes=5, nb_seeds=2)
+        
+        if df_batch.empty:
+            continue
+            
+        # Étape B : Validation Format
+        df_batch_valide, format_ok = validateur.valider_format(df_batch, df_reel)
+        if not format_ok or df_batch_valide.empty:
+            continue
+            
+        # Étape C : Validation Sémantique (Anti-doublons)
+        df_batch_nettoye = validateur.valider_semantique(df_batch_valide, seuil_similarite=0.85)
+        
+        if not df_batch_nettoye.empty:
+            lignes_totales_validees.append(df_batch_nettoye)
+            
+    # 4. Finalisation
+    if lignes_totales_validees:
+        dataset_complet = pd.concat(lignes_totales_validees, ignore_index=True)
+        
+        print("\nÉvaluation des Métriques Globales :")
         analyser_diversite_texte(dataset_complet)
         
-        # Sauvegarde dans le nouveau dossier data/output/
-        fichier_sortie = os.path.join(dossier_output, "donnees_synthetiques_v2_personas.csv")
-        dataset_complet.to_csv(fichier_sortie, index=False)
-        print(f"\nDataset complet sauvegardé dans : {fichier_sortie}")
+        # Étape D : Curation (Sauvegarde professionnelle)
+        curateur.sauvegarder(dataset_complet, nom_fichier="donnees_synthetiques_multi_agents")
     else:
-        print("\nLa génération a échoué.")
+        print("\nÉchec : Aucune donnée n'a survécu au processus de validation.")
 
 if __name__ == "__main__":
     main()
