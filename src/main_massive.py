@@ -104,10 +104,6 @@ def executer_generation_massive(
                 if not df_checkpoint.empty:
                     curateur.sauvegarder(df_checkpoint, nom_fichier="checkpoint_en_cours")
 
-            # Pas de pause necessaire : Ollama tourne en local, il n'y a pas
-            # de quota API a respecter. La seule limite est la vitesse du GPU,
-            # qui regule naturellement le rythme des appels.
-
     except KeyboardInterrupt:
         print("\n[Orchestrateur] Interruption manuelle detectee, sauvegarde de l'etat actuel...")
 
