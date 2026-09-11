@@ -6,13 +6,13 @@ def analyser_diversite_texte(df):
     Analyse les colonnes textuelles d'un DataFrame pour calculer 
     la richesse du vocabulaire (Type-Token Ratio) et la longueur moyenne.
     """
-    print("\nCalcul des métriques de diversité...")
+    print("\nCalcul des metriques de diversite...")
     
-    # Identifier les colonnes qui contiennent du texte (chaînes de caractères)
+    # Identifier les colonnes qui contiennent du texte (chaînes de caracteres)
     colonnes_textes = df.select_dtypes(include=['object']).columns
     
     if len(colonnes_textes) == 0:
-        print("Aucune colonne de texte trouvée pour calculer les métriques.")
+        print("Aucune colonne de texte trouvee pour calculer les metriques.")
         return {}
 
     tous_les_textes = ""
@@ -29,8 +29,8 @@ def analyser_diversite_texte(df):
     longueur_moyenne_ligne = nb_mots_total / len(df) if len(df) > 0 else 0
     
     # TTR (Type-Token Ratio) : Richesse du vocabulaire
-    # Un score proche de 1 signifie que chaque mot utilisé est unique.
-    # Un score proche de 0 signifie que l'IA répète toujours les mêmes mots.
+    # Un score proche de 1 signifie que chaque mot utilise est unique.
+    # Un score proche de 0 signifie que l'IA repete toujours les mêmes mots.
     ttr = (nb_mots_uniques / nb_mots_total) if nb_mots_total > 0 else 0
 
     metriques = {
