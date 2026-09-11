@@ -1,7 +1,13 @@
 python-dotenv
 pandas
-google-genai
+ollama
 streamlit
 pandera
 scikit-learn
 pyarrow
+langgraph
+mlflow
+dvc
+pyyaml
+setuptools<82
+protobuf<5

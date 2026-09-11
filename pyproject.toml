@@ -5,11 +5,18 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "dvc>=3.67.1",
     "google-genai>=2.16.0",
+    "langgraph>=1.2.10",
+    "mlflow>=1.27.0",
+    "ollama>=0.6.2",
     "pandas>=3.0.5",
     "pandera>=0.32.1",
+    "protobuf<5",
     "pyarrow>=24.0.0",
     "python-dotenv>=1.2.2",
+    "pyyaml>=6.0.3",
     "scikit-learn>=1.9.0",
+    "setuptools<82",
     "streamlit>=1.60.0",
 ]
