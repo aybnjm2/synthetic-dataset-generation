@@ -7,4 +7,15 @@ data/output/*
 # MAIS ne pas ignorer le dossier output lui-même (fichier caché .gitkeep)
 !data/output/.gitkeep
 
+# ET ne pas ignorer les pointeurs DVC (.dvc) : ce sont de petits fichiers
+# texte à committer dans Git, seule la donnée réelle qu'ils référencent
+# va dans le cache/remote DVC.
+!data/output/*.dvc
+
 data/input/*
+
+# MLflow : les runs sont stockés localement dans mlruns/, pas versionnés dans Git
+mlruns/
+
+# Cache DVC (la donnée réelle vit ici, jamais dans Git)
+.dvc/cache
