@@ -12,11 +12,11 @@ class AgentValidateur:
         self.host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
         self.client = ollama.Client(host=self.host)
 
-        # nomic-embed-text : leger (274 Mo), rapide, largement suffisant
+        # nomic-embed-text : leger (274 Mo) rapide largement suffisant
         # pour de la detection de similarite/doublons.
         self.embedding_model = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
 
-        # memoire de l'agent : on stocke les vecteurs deja valides (batches
+        # memoire de l'agent  on stocke les vecteurs deja valides (batches
         # precedents + dataset source) pour eviter les repetitions.
         self.historique_embeddings = []
 
