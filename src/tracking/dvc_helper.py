@@ -3,13 +3,6 @@ import yaml
 
 
 def versionner_avec_dvc(chemin_fichier):
-    """Ajoute le fichier au tracking DVC ('dvc add') et retourne son hash MD5
-    (lu depuis le fichier .dvc genere), pour le logger comme tag MLflow et
-    ainsi relier un run MLflow a la version exacte des donnees produites.
-
-    Necessite que 'dvc init' ait deja ete execute a la racine du projet et
-    qu'un remote soit configure (voir README).
-    """
     print(f"[DVC] Versionnement de {chemin_fichier}...")
     resultat = subprocess.run(
         ["dvc", "add", chemin_fichier],
