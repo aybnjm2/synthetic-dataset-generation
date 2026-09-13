@@ -3,21 +3,6 @@ from src.orchestration.state import PipelineState
 
 
 def construire_graph(generateur, validateur, curateur):
-    """Construit le graphe d'états LangGraph pour le traitement d'UN batch.
-
-    Logique :
-      generer -> valider_format --(OK)--> valider_semantique --(OK)--> curer -> FIN
-                       |--(NON, tentatives restantes)--> generer
-                       |--(NON, plus de tentatives)-----> echec -> FIN
-
-      valider_semantique --(NON, tous doublons, tentatives restantes)--> generer
-      valider_semantique --(NON, tous doublons, plus de tentatives)-----> echec -> FIN
-
-    Les agents (generateur, validateur, curateur) sont capturés par closure :
-    ils ne transitent pas dans le state (non sérialisable simplement), le
-    state ne contient que des données.
-    """
-
     def noeud_generer(state: PipelineState) -> PipelineState:
         tentative = state["tentative"] + 1
         print(f"\n[Graph] --- Génération (tentative {tentative}/{state['max_tentatives']}) ---")
