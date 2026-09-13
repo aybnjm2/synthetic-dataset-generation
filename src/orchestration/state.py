@@ -3,14 +3,6 @@ import pandas as pd
 
 
 class PipelineState(TypedDict):
-    """etat transporte a travers le graphe pour le traitement d'UN batch.
-
-    Le graphe gère la resilience au niveau d'un batch (retry avec
-    correction). La boucle "generation massive" (plusieurs milliers de
-    lignes) est geree par l'orchestrateur au-dessus, qui invoque ce graphe
-    une fois par batch.
-    """
-
     df_source: pd.DataFrame          # dataset reel (jamais modifie)
     nb_lignes: int                   # nb de lignes a generer pour ce batch
     nb_seeds: int                    # nb d'exemples reels envoyes au LLM
